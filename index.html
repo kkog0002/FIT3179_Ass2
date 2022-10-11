@@ -1,1 +1,477 @@
-
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/vega@5.22.1"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-lite@5.2.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vega-embed@6.20.8"></script>
+</head>
+<body>
+  <div id="vis"/>
+  <script>
+    const spec = {
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": {
+    "text": "Weather reports for WorldWide Countries",
+    "anchor": "middle",
+    "fontSize": 40
+  },
+  "vconcat": [
+    {
+      "width": 1000,
+      "height": 500,
+      "title": {
+        "text": "Precipitation in Depth in Year 2018",
+        "anchor": "middle",
+        "fontSize": 16,
+        "frame": "group",
+        "offset": 4
+      },
+      "projection": {"type": "equalEarth"},
+      "layer": [
+        {
+          "data": {
+            "url": "https://raw.githubusercontent.com/JiazhouLiu/FIT3179/main/VegaLite/3_choropleth_map/js/ne_110m_admin_0_countries.topojson",
+            "format": {
+              "type": "topojson",
+              "feature": "ne_110m_admin_0_countries"
+            },
+            "mark": {"type": "geoshape", "fill": "lightgray", "stroke": "white"}
+          },
+          "params": [
+            {
+              "name": "YEAR_selection",
+              "bind": {
+                "input": "select",
+                "options": [null, "2007", "2012", "2014"],
+                "labels": ["Year 2014", "Year 2007", "Year 2012", "Year 2014"],
+                "name": "YEAR selection: "
+              }
+            }
+          ],
+          "transform": [
+            {
+              "lookup": "properties.NAME",
+              "from": {
+                "data": {
+                  "url": "https://raw.githubusercontent.com/kkog0002/FIT3179-W10/main/d2.csv",
+                  "format": {
+                    "type": "csv",
+                    "parse": {"Longtitude": "number", "Latitude": "number"}
+                  }
+                },
+                "key": "Country",
+                "fields": ["Y2018"]
+              }
+            },
+            {"calculate": "datum.Y2018 + 0.1", "as": "Depth"}
+          ],
+          "mark": {"type": "geoshape", "stroke": "lightgray"},
+          "encoding": {
+            "color": {
+              "field": "Depth",
+              "type": "quantitative",
+              "scale": {"domain": [0, 15000]}
+            },
+            "tooltip": [
+              {
+                "field": "properties.NAME",
+                "type": "nominal",
+                "title": "Country"
+              },
+              {
+                "field": "Depth",
+                "type": "quantitative",
+                "title": "Annual Precipitation in Depth"
+              }
+            ]
+          }
+        },
+        {
+          "data": {
+            "url": "https://raw.githubusercontent.com/FIT3179/Vega-Lite/main/7_others/oceans.topojson",
+            "format": {"type": "topojson", "feature": "oceans"}
+          },
+          "mark": {"type": "geoshape", "fill": "lightgray"}
+        },
+        {
+          "data": {
+            "url": "https://raw.githubusercontent.com/FIT3179/Vega-Lite/main/2_symbol_map/js/WorldMapWithGraticules.topojson",
+            "format": {"type": "topojson", "feature": "ne_110m_graticules_30"}
+          },
+          "mark": {"type": "geoshape", "fill": null, "stroke": "white"}
+        }
+      ]
+    },
+    {
+      "width": 1000,
+      "height": 500,
+      "data": {
+        "url": "https://raw.githubusercontent.com/kkog0002/FIT3179-W10/main/Temperature_al_2000-2019.csv",
+        "format": {"type": "csv", "parse": {"Depth": "number", "Date": "date"}}
+      },
+      "mark": {"type": "line", "point": {"filled": false, "fill": "white"}},
+      "params": [
+        {
+          "name": "Country_selection",
+          "bind": {
+            "input": "select",
+            "options": [null, "Australia", "Panama", "Ukraine"],
+            "labels": ["Select All", "Australia", "Pan", "Ukraine"],
+            "name": "Country selection: "
+          }
+        }
+      ],
+      "encoding": {
+        "x": {
+          "field": "Date",
+          "timeUnit": "yearmonth",
+          "scale": {"domain": {"param": "time_brush"}},
+          "title": "Year"
+        },
+        "y": {"field": "Depth", "aggregate": "mean"},
+        "color": {
+          "field": "Country",
+          "scale": {"domain": ["Australia", "Ukraine"]}
+        },
+        "tooltip": [
+          {"field": "Date", "type": "nominal"},
+          {"field": "Depth", "type": "quantitative"}
+        ]
+      }
+    },
+    {
+      "width": 1000,
+      "height": 100,
+      "data": {
+        "url": "https://raw.githubusercontent.com/kkog0002/FIT3179-W10/main/Temperature_al_2000-2019.csv",
+        "format": {"type": "csv", "parse": {"Depth": "number", "Date": "date"}}
+      },
+      "mark": "line",
+      "params": [
+        {
+          "name": "time_brush",
+          "select": {"type": "interval", "encodings": ["x"]}
+        }
+      ],
+      "encoding": {
+        "x": {
+          "field": "Date",
+          "timeUnit": "yearmonth",
+          "axis": {"title": "Please select the year.", "format": "%Y"}
+        },
+        "y": {"aggregate": "mean", "field": "Depth", "title": "AVG of Depth"}
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "right",
+        "baseline": "middle",
+        "dx": -12,
+        "fontSize": 11.5
+      }
+    },
+    {
+      "hconcat": [
+        {
+          "width": 600,
+          "height": 300,
+          "title": {
+            "text": "China's Cloud Coverage Percentage%",
+            "anchor": "start",
+            "fontSize": 20
+          },
+          "layer": [
+            {
+              "data": {
+                "name": "China_Temp",
+                "url": "https://raw.githubusercontent.com/kkog0002/FIT3179-W10/main/china.csv",
+                "format": {
+                  "type": "csv",
+                  "parse": {"Date": "date", "ctd": "number"}
+                }
+              },
+              "transform": [{"calculate": "datum.ctd", "as": "ctd"}],
+              "mark": "rect",
+              "encoding": {
+                "x": {
+                  "field": "Date",
+                  "timeUnit": "year",
+                  "type": "ordinal",
+                  "scale": {"domain": {"param": "time_brush"}},
+                  "title": "Year"
+                },
+                "y": {
+                  "field": "Date",
+                  "timeUnit": "month",
+                  "type": "ordinal",
+                  "title": "Month"
+                },
+                "color": {
+                  "field": "ctd",
+                  "type": "quantitative",
+                  "legend": {"title": null},
+                  "scale": {
+                    "range": [
+                      "#fff7fb",
+                      "#ece2f0",
+                      "#d0d1e6",
+                      "#a6bddb",
+                      "#67a9cf",
+                      "#3690c0",
+                      "#02818a",
+                      "#016c59",
+                      "#014636"
+                    ]
+                  }
+                },
+                "tooltip": [
+                  {"field": "YEAR", "type": "ordinal", "title": "Year"},
+                  {"field": "Month", "type": "ordinal", "title": "Month"},
+                  {
+                    "field": "ctd",
+                    "type": "quantitative",
+                    "title": "Cloud Cover"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "width": 600,
+          "height": 300,
+          "title": {
+            "text": "Canada's Cloud Coverage Percentage%",
+            "anchor": "start",
+            "fontSize": 20
+          },
+          "layer": [
+            {
+              "data": {
+                "name": "Canada_Temp",
+                "url": "https://raw.githubusercontent.com/kkog0002/FIT3179-W10/main/can.csv",
+                "format": {
+                  "type": "csv",
+                  "parse": {"Date": "date", "ctd": "number"}
+                }
+              },
+              "mark": "rect",
+              "encoding": {
+                "x": {
+                  "field": "Date",
+                  "timeUnit": "year",
+                  "type": "ordinal",
+                  "scale": {"domain": {"param": "time_brush"}},
+                  "title": "Year"
+                },
+                "y": {
+                  "field": "Date",
+                  "timeUnit": "month",
+                  "type": "ordinal",
+                  "title": "Month"
+                },
+                "color": {
+                  "field": "ctd",
+                  "type": "quantitative",
+                  "legend": {"title": null},
+                  "scale": {
+                    "range": [
+                      "#fff7fb",
+                      "#ece2f0",
+                      "#d0d1e6",
+                      "#a6bddb",
+                      "#67a9cf",
+                      "#3690c0",
+                      "#02818a",
+                      "#016c59",
+                      "#014636"
+                    ]
+                  }
+                },
+                "tooltip": [
+                  {"field": "YEAR", "type": "ordinal", "title": "Year"},
+                  {"field": "Month", "type": "ordinal", "title": "Month"},
+                  {
+                    "field": "ctd",
+                    "type": "quantitative",
+                    "title": "Cloud Cover"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "hconcat": [
+        {
+          "width": 600,
+          "height": 300,
+          "title": {
+            "text": "Australia's Cloud Coverage Percentage%",
+            "anchor": "start",
+            "fontSize": 20
+          },
+          "layer": [
+            {
+              "data": {
+                "name": "Aust_Temp",
+                "url": "https://raw.githubusercontent.com/kkog0002/FIT3179-W10/main/aust.csv",
+                "format": {
+                  "type": "csv",
+                  "parse": {"Date": "date", "ctd": "number"}
+                }
+              },
+              "transform": [{"calculate": "datum.ctd", "as": "ctd"}],
+              "mark": "rect",
+              "encoding": {
+                "x": {
+                  "field": "Date",
+                  "timeUnit": "year",
+                  "type": "ordinal",
+                  "scale": {"domain": {"param": "time_brush"}},
+                  "title": "Year"
+                },
+                "y": {
+                  "field": "Date",
+                  "timeUnit": "month",
+                  "type": "ordinal",
+                  "title": "Month"
+                },
+                "color": {
+                  "field": "ctd",
+                  "type": "quantitative",
+                  "legend": {"title": null},
+                  "scale": {
+                    "range": [
+                      "#fff7fb",
+                      "#ece2f0",
+                      "#d0d1e6",
+                      "#a6bddb",
+                      "#67a9cf",
+                      "#3690c0",
+                      "#02818a",
+                      "#016c59",
+                      "#014636"
+                    ]
+                  }
+                },
+                "tooltip": [
+                  {"field": "YEAR", "type": "ordinal", "title": "Year"},
+                  {"field": "Month", "type": "ordinal", "title": "Month"},
+                  {
+                    "field": "ctd",
+                    "type": "quantitative",
+                    "title": "Cloud Cover"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "layer": [
+            {
+              "width": 600,
+              "height": 300,
+              "title": {
+                "text": "Ukraine's Cloud Coverage Percentage%",
+                "anchor": "start",
+                "fontSize": 20
+              },
+              "layer": [
+                {
+                  "data": {
+                    "name": "Uraine_Temp",
+                    "url": "https://raw.githubusercontent.com/kkog0002/FIT3179-W10/main/Ukraine.csv",
+                    "format": {
+                      "type": "csv",
+                      "parse": {"Date": "date", "ctd": "number"}
+                    }
+                  },
+                  "transform": [{"calculate": "datum.ctd", "as": "ctd"}],
+                  "mark": "rect",
+                  "encoding": {
+                    "x": {
+                      "field": "Date",
+                      "timeUnit": "year",
+                      "type": "ordinal",
+                      "scale": {"domain": {"param": "time_brush"}},
+                      "title": "Year"
+                    },
+                    "y": {
+                      "field": "Date",
+                      "timeUnit": "month",
+                      "type": "ordinal",
+                      "title": "Month"
+                    },
+                    "color": {
+                      "field": "ctd",
+                      "type": "quantitative",
+                      "legend": {"title": null},
+                      "scale": {
+                        "range": [
+                          "#fff7fb",
+                          "#ece2f0",
+                          "#d0d1e6",
+                          "#a6bddb",
+                          "#67a9cf",
+                          "#3690c0",
+                          "#02818a",
+                          "#016c59",
+                          "#014636"
+                        ]
+                      }
+                    },
+                    "tooltip": [
+                      {"field": "YEAR", "type": "ordinal", "title": "Year"},
+                      {"field": "Month", "type": "ordinal", "title": "Month"},
+                      {
+                        "field": "ctd",
+                        "type": "quantitative",
+                        "title": "Cloud Cover"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "data": {
+        "url": "https://raw.githubusercontent.com/kkog0002/FIT3179-W10/main/Aust_temp.csv",
+        "format": {
+          "type": "csv",
+          "parse": {"Depth": "number", "Date": "date", "Month": "string"}
+        }
+      },
+      "mark": "bar",
+      "encoding": {
+        "x": {
+          "field": "Month",
+          "type": "nominal",
+          "axis": {"domain": false, "ticks": false}
+        },
+        "y": {
+          "field": "Depth",
+          "type": "quantitative",
+          "axis": {
+            "gridColor": {
+              "condition": {"test": "datum.Depth === 0", "value": "black"}
+            }
+          }
+        }
+      }
+    }
+  ],
+  "config": {}
+};
+    vegaEmbed("#vis", spec, {mode: "vega-lite"}).then(console.log).catch(console.warn);
+  </script>
+</body>
+</html>
