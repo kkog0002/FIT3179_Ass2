@@ -1,0 +1,75 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "vconcat": [
+    {
+      "width": 1000,
+      "height": 500,
+      "data": {
+        "url": "https://raw.githubusercontent.com/kkog0002/FIT3179-W10/main/Temperature_al_2000-2019.csv",
+        "format": {"type": "csv", "parse": {"Depth": "number", "Date": "date"}}
+      },
+      "mark": {"type": "line", "point": {"filled": false, "fill": null}},
+      "params": [
+        {
+          "name": "Country_selection",
+          "bind": {
+            "input": "select",
+            "options": [null, "Australia", "Panama", "Ukraine"],
+            "labels": ["Select All", "Australia", "Pan", "Ukraine"],
+            "name": "Country selection: "
+          }
+        }
+      ],
+      "encoding": {
+        "x": {
+          "field": "Date",
+          "timeUnit": "yearmonth",
+          "scale": {"domain": {"param": "time_brush"}},
+          "title": "Year"
+        },
+        "y": {"field": "Depth", "aggregate": "mean"},
+        "color": {
+          "field": "Country",
+          "scale": {"domain": ["Australia", "Ukraine"]}
+        },
+        "tooltip": [
+          {"field": "Date", "type": "nominal"},
+          {"field": "Depth", "type": "quantitative"}
+        ]
+      }
+    },
+    {
+      "width": 1000,
+      "height": 100,
+      "data": {
+        "url": "https://raw.githubusercontent.com/kkog0002/FIT3179-W10/main/Temperature_al_2000-2019.csv",
+        "format": {"type": "csv", "parse": {"Depth": "number", "Date": "date"}}
+      },
+      "mark": "line",
+      "params": [
+        {
+          "name": "time_brush",
+          "select": {"type": "interval", "encodings": ["x"]}
+        }
+      ],
+      "encoding": {
+        "x": {
+          "field": "Date",
+          "timeUnit": "yearmonth",
+          "axis": {"title": "Please select the year.", "format": "%Y"}
+        },
+        "y": {"aggregate": "mean", "field": "Depth", "title": "AVG of Depth"}
+      }
+    },
+    {
+      "mark": {
+        "type": "text",
+        "align": "right",
+        "baseline": "middle",
+        "dx": -12,
+        "fontSize": 11.5
+      }
+    }
+  ],
+  "config": {}
+}
