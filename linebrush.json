@@ -4,6 +4,11 @@
     {
       "width": 800,
       "height": 300,
+      "title": {
+        "text": "Comparison of Temperatures",
+        "anchor": "start",
+        "fontSize": 18
+      },
       "data": {
         "url": "https://raw.githubusercontent.com/kkog0002/FIT3179-W10/main/Temperature_al_2000-2019.csv",
         "format": {"type": "csv", "parse": {"Depth": "number", "Date": "date"}}
