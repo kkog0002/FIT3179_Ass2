@@ -1,0 +1,123 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 800,
+  "height": 500,
+  "hconcat": [
+    {
+      "width": 400,
+      "height": 250,
+      "title": {
+        "text": "China's Cloud Coverage Percentage%",
+        "anchor": "start",
+        "fontSize": 18
+      },
+      "layer": [
+        {
+          "data": {
+            "name": "China_Temp",
+            "url": "https://raw.githubusercontent.com/kkog0002/FIT3179-W10/main/china.csv",
+            "format": {
+              "type": "csv",
+              "parse": {"Date": "date", "ctd": "number"}
+            }
+          },
+          "transform": [{"calculate": "datum.ctd", "as": "ctd"}],
+          "mark": "rect",
+          "encoding": {
+            "x": {
+              "field": "Date",
+              "timeUnit": "year",
+              "type": "ordinal",
+              "title": "Year"
+            },
+            "y": {
+              "field": "Date",
+              "timeUnit": "month",
+              "type": "ordinal",
+              "title": "Month"
+            },
+            "color": {
+              "field": "ctd",
+              "type": "quantitative",
+              "legend": {"title": "Cloud Cover"},
+              "scale": {
+                "range": [
+                  "#eff3ff",
+                  "#c6dbef",
+                  "#9ecae1",
+                  "#6baed6",
+                  "#4292c6",
+                  "#2171b5",
+                  "#084594"
+                ]
+              }
+            },
+            "tooltip": [
+              {"field": "YEAR", "type": "ordinal", "title": "Year"},
+              {"field": "Month", "type": "ordinal", "title": "Month"},
+              {"field": "ctd", "type": "quantitative", "title": "Cloud Cover"}
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "width": 400,
+      "height": 250,
+      "title": {
+        "text": "Canada's Cloud Coverage Percentage%",
+        "anchor": "start",
+        "fontSize": 18
+      },
+      "layer": [
+        {
+          "data": {
+            "name": "Canada_Temp",
+            "url": "https://raw.githubusercontent.com/kkog0002/FIT3179-W10/main/can.csv",
+            "format": {
+              "type": "csv",
+              "parse": {"Date": "date", "ctd": "number"}
+            }
+          },
+          "mark": "rect",
+          "encoding": {
+            "x": {
+              "field": "Date",
+              "timeUnit": "year",
+              "type": "ordinal",
+              "title": "Year"
+            },
+            "y": {
+              "field": "Date",
+              "timeUnit": "month",
+              "type": "ordinal",
+              "title": "Month"
+            },
+            "color": {
+              "field": "ctd",
+              "type": "quantitative",
+              "legend": {"title": "Cloud Cover"},
+              "scale": {
+                "range": [
+                  "#eff3ff",
+                  "#c6dbef",
+                  "#9ecae1",
+                  "#6baed6",
+                  "#4292c6",
+                  "#2171b5",
+                  "#084594"
+                ]
+              }
+            },
+            "tooltip": [
+              {"field": "YEAR", "type": "ordinal", "title": "Year"},
+              {"field": "Month", "type": "ordinal", "title": "Month"},
+              {"field": "ctd", "type": "quantitative", "title": "Cloud Cover"}
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "config": {}
+}
