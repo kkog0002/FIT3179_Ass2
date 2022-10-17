@@ -3,7 +3,7 @@
   "vconcat": [
     {
       "width": 600,
-      "height": 500,
+      "height": 300,
       "data": {
         "url": "https://raw.githubusercontent.com/kkog0002/FIT3179-W10/main/Temperature_al_2000-2019.csv",
         "format": {"type": "csv", "parse": {"Depth": "number", "Date": "date"}}
@@ -39,6 +39,8 @@
       }
     },
     {
+      "width": 600,
+      "height": 100,
       "data": {
         "url": "https://raw.githubusercontent.com/kkog0002/FIT3179-W10/main/Temperature_al_2000-2019.csv",
         "format": {"type": "csv", "parse": {"Depth": "number", "Date": "date"}}
