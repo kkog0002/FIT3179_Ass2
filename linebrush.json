@@ -25,6 +25,9 @@
           }
         }
       ],
+      "transform": [
+        {"calculate": "datetime(datum.Date)", "as": "date"}
+      ],
       "encoding": {
         "x": {
           "field": "Date",
@@ -38,7 +41,7 @@
           "scale": {"domain": ["Australia", "Ukraine"]}
         },
         "tooltip": [
-          {"field": "Date", "type": "nominal"},
+          {"field": "date"},
           {"field": "Depth", "type": "quantitative"}
         ]
       }
